@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL SHORTNER</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+
+      body {
+        background-size: cover;
+        background: linear-gradient(
+          to right,
+          rgb(159, 63, 255),
+          rgb(64, 73, 242)
+        );
+      }
+
+      html {
+        scrollbar-width: none;
+      }
+      body::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Header Part */
+      .header {
+        width: 50%;
+        padding: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        background-color: whitesmoke;
+        color: black;
+        margin-top: 10vh;
+        box-shadow: 1px 1px 1px 1px black;
+        margin-bottom: 20px;
+        border-radius: 5px;
+      }
+      input {
+        width: 80%;
+        padding: 7px;
+        border: 1px solid rgb(183, 180, 180);
+      }
+      .input {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .btn {
+        padding: 5px 10px 5px 10px;
+        /* background-color: rgb(41, 234, 41); */
+        background-color: #28a745;
+        color: White;
+        font-size: 15px;
+        border: 1px solid rgb(21, 181, 21);
+        margin-left: 5px;
+      }
+
+      .btn:hover {
+        opacity: 0.9;
+        cursor: pointer;
+      }
+      .remove {
+        background-color: #dc3545;
+      }
+      .btn-2 {
+        display: flex;
+        margin-right: 10px;
+      }
+      .content {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .url-long {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: whitesmoke;
+        color: black;
+        box-shadow: 1px 1px 1px 1px black;
+        margin-top: 10px;
+      }
+      .url-short {
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: whitesmoke;
+        color: black;
+        box-shadow: 1px 1px 1px 1px black;
+      }
+
+      p {
+        margin-left: 20px;
+      }
+
+      .editInput {
+        padding: 10px;
+        margin: 7px 18px 7px 16px;
+      }
+
+      h3 {
+        font-size: 20px;
+        text-align: center;
+        color: black;
+      }
+
+      .btn-success {
+        background-color: #28a745;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="header">
+        <h1>URL SHORTNER</h1>
+        <form action="/shortUrls" class="input" method="post">
+          <label for="fullUrl"></label>
+          <input
+            required
+            placeholder="Enter Url"
+            type="url"
+            name="fullUrl"
+            id="fullUrl"
+          />
+          <button id="add" class="btn" type="submit">Submit</button>
+        </form>
+      </div>
+    </header>
+    <main>
+      <div id="content1" class="content">
+        <!-- List of Url  -->
+        <% shortUrls.forEach(shortUrl => { %>
+
+        <div class="url-lists">
+          <div class="url-long">
+            <p style="margin-left: 20px">Long Url -> 
+              <a href="<%= shortUrl.full  %> "><%= shortUrl.full %></a>
+            </p>
+            <div class="btn-2">
+              <button onclick="remove(this)" class="btn remove">Remove</button>
+            </div>
+          </div>
+          <div class="url-short">
+            <p style="margin-left: 20px">Short Url ->
+              <a href="<%= shortUrl.short  %>"><%= shortUrl.short %></a>
+            </p>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </main>
+
+    <script>
+      // Selecting the add button using id
+      let add = document.getElementById("add");
+      add.addEventListener("click", addTodo);
+
+      let empty = false;
+
+      // To display the msg at start
+      let x = document.getElementById("content1");
+      if (x.children.length <1) {
+        let msg = document.createElement("h3");
+        msg.classList.add("h3");
+        msg.textContent = "Please Add Some Urls To Show";
+        x.appendChild(msg);
+        empty = true;
+      }
+
+      // Adding the todo
+      function addTodo(params) {
+        if (empty == true) {
+          let x = document.getElementById("content1");
+          x.firstElementChild.remove();
+          empty = false;
+        }
+
+        let currentBtn = params.currentTarget;
+        let currentInput = currentBtn.previousElementSibling;
+
+        // Adding the new todo
+        let newTodo = document.createElement("div");
+        newTodo.classList.add("url-lists");
+
+        newTodo.innerHTML = `
+        <div class="url-long">
+            <p style="margin-left: 20px">
+              <a href=""></a>
+            </p>
+            <div class="btn-2">
+              <button onclick="remove(this)" class="btn remove">Remove</button>
+            </div>
+          </div>
+          <div class="url-short">
+            <p style="margin-left: 20px">
+              <a href=""></a>
+            </p>
+          </div>
+        `;
+
+        // Grab the parent element and append it to DOM
+        let content = document.getElementById("content1");
+        content.appendChild(newTodo);
+      }
+
+      // removing the todo
+      function remove(e) {
+        let x = document.getElementById("content1");
+        // console.log(x.children.length)
+
+        if (x.children.length <= 1) {
+          e.parentElement.parentElement.parentElement.remove();
+          console.log(e);
+          let msg = document.createElement("h3");
+          msg.classList.add("h3");
+          msg.textContent = "Please Add Some Urls To Show";
+          x.appendChild(msg);
+          empty = true;
+        } 
+        else {
+          e.parentElement.parentElement.parentElement.remove();
+        }
+      }
+    </script>
+  </body>
+</html>
